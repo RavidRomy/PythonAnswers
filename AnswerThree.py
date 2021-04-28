@@ -25,8 +25,9 @@ def shrink_str(strr):
 
 
 def main():
-    somestring = "abcaadddcc"
-    shrink_str(somestring)
+    shrink_str("abcaadddcc")
+    #shrink_str("aabbbbcdddeaaaaa")
+    #shrink_str("aabbb")
 
 if __name__ == "__main__":
     main()
