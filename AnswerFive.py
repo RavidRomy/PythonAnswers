@@ -11,4 +11,18 @@
 ###########\  *****  /##########
 ################################
 
-main
+
+def multi(x):
+    return x * 2
+
+
+def Map(f, list):
+    global n
+    n = len(list) - 1
+    while n > 0:
+        print(f(list[n]))
+        n -= 1
+
+
+listTemps = [2, 4, 6, 8, 10]
+Map(multi, listTemps)
