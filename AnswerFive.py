@@ -16,13 +16,17 @@ def multi(x):
     return x * 2
 
 
-def Map(f, list):
-    global n
-    n = len(list) - 1
-    while n > 0:
-        print(f(list[n]))
+def Map(f, listt):
+    n = len(listt) -1
+    while n >= 0:
+        print(f(listt[n]))
         n -= 1
 
 
-listTemps = [2, 4, 6, 8, 10]
-Map(multi, listTemps)
+def main():
+    listoftemps = [9, 4, 6, 8, 10]
+    Map(multi, listoftemps)
+
+
+if __name__ == "__main__":
+    main()

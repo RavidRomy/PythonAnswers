@@ -11,48 +11,64 @@
 ###########\  *****  /##########
 ################################
 
-game = [[2, 2, 2],
-        [2, 1, 2],
-        [1, 0, 2], ]
-
-def win(current_game):
-    global item, row
-    counter = 0
-    for row in game:
-        #print(row)
-        all_match = True
-        counter += 1
-        for item in row:
-            #print("item = ", item, "row = ", row[0])
-            if item != row[0]:
-                all_match = False
-                counter -= 1
-        if all_match:
-            print("Game player", item, "winner!!!")
-    if counter == 2 and game[0][0] != game[1][0] or game[1][0] != game[2][0]:
-        print(game[0][0], game[1][0])
-        print("Two won then it's Tie")
-    return -1
+board = [[1, 1, 1],
+         [2, 2, 2],
+         [2, 0, 2], ]
 
 
-x = win(game)
-print(x)
+def win_check(num):
+    for row in board:
+        for tile in row:
+            if tile == num:
+                continue
+            else:
+                break
+        else:
+            return True
 
-diags = []
-for col, row in enumerate(reversed(range(len(game)))):
-    diags.append(game[row][col])
+    for column in range(3):
+        for row in board:
+            if row[column] == num:
+                continue
+            else:
+                break
+        else:
+            return True
 
-diags = []
-for ix in range(len(game)):
-    diags.append(game[ix][ix])
-if diags[0] == diags[1] == diags[2]:
-    print("Winner! = ", diags[0])
+    for tile in range(3):
+        if board[tile][tile] == num:
+            continue
+        else:
+            break
+    else:
+        return True
 
-for col in range(len(game)):
-    check = []
+    for tile in range(3):
+        if board[tile][2 - tile] == num:
+            continue
+        else:
+            break
+    else:
+        return True
 
-    for row in game:
-        check.append(row[col])
 
-    if check.count(check[0]) == len(check) and check[0] != 0:
-        print("Winner! = ", check[0])
+def main():
+    if win_check(1):
+        won1 = True
+    else:
+        won1 = False
+    if win_check(2):
+        won2 = True
+    else:
+        won2 = False
+
+    if won1 == won2:
+        print("Tie")
+    elif won1:
+        print("Won 1")
+    elif won2:
+        print("Won 2")
+
+
+if __name__ == "__main__":
+    main()

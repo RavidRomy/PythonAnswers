@@ -26,8 +26,11 @@ def shrink_str(strr):
 
 def main():
     shrink_str("abcaadddcc")
-    #shrink_str("aabbbbcdddeaaaaa")
-    #shrink_str("aabbb")
+    print("")
+    shrink_str("aabbbbcdddeaaaaa")
+    print("")
+    shrink_str("aabbb")
+
 
 if __name__ == "__main__":
     main()

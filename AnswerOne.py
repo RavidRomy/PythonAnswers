@@ -11,31 +11,30 @@
 ############# ***** ############
 ################################
 
-# Section a
-sumint = 0
-while True:
-    number = input("Please enter a valid number or stop to stop the program ")
-    if number == "stop":
-        break
-    try:
-        sumint = sumint + int(number)
-    except ValueError:
-        print("Enter a valid number or stop the program, faggot...................")
-
-print("sum = " + str(sumint))
 
 # Section b
-def sum_digits(digit):
-    s = sum(int(x) for x in str(digit) if x.isdigit())
-    if len(str(s)) > 1:
-        return sum_digits(s) + s
-    else:
-        return s
+def sum_digits(listofdigits):
+    return sum(int(x) for x in str(listofdigits) if x.isdigit())
+
 
 def main():
-    listofnums = input("Please enter list of numbers with '' or without ")
+    # Section a
+    sumint = 0
+    while True:
+        number = input("Please enter a valid number or stop to stop the program: \n")
+        if number == "stop":
+            break
+        try:
+            sumint = sumint + int(number)
+        except ValueError:
+            print("Enter a valid number or stop the program, faggot................... \n")
+
+    print("sum = " + str(sumint))
+
+    listofnums = input("Please enter list of numbers with '' or without: \n")
     sum = sum_digits(listofnums)
     print("sum = " + str(sum))
+
 
 if __name__ == "__main__":
     main()

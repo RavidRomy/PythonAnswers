@@ -31,11 +31,13 @@ def check_id(idnum):
     else:
         return False
 
+
 def main():
     print(check_id("543700421"))
     print(check_id("322248097"))
     print(check_id("322248093"))
     print(check_id("059807578"))
+
 
 if __name__ == "__main__":
     main()
