@@ -11,7 +11,7 @@
 ###########\  *****  /##########
 ################################
 
-# Modern Bank - ATM Application
+# Modern Bank - ATM Application based client-server system
 # client
 
 import socket

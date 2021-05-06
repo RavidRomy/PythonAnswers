@@ -11,28 +11,14 @@ from os import system, name
 
 print_lock = threading.Lock()
 
-balance = 10000
-firebaseConfig = {
-    "apiKey": "AIzaSyA3QR5xAFUKdS8TC3cTIhEVvlR6r3ITwAY",
-    "authDomain": "pythonatm-bank.firebaseapp.com",
-    "storageBucket": "pythonatm-bank.appspot.com",
-    "databaseURL": "https://pythonatm-bank-default-rtdb.firebaseio.com/"
-}
-
-firebase = pyrebase.initialize_app(firebaseConfig)
-
-auth = firebase.auth()
-db = firebase.database()
-
 
 def clear():
-    os.system( 'cls' )
+    os.system('cls')
 
 
 def welcome():
-
-    smoke = ['               (_)','               ()', '                ()','               ()', '                ()']
-    print("\n"*4)
+    smoke = ['               (_)', '               ()', '                ()', '               ()', '                ()']
+    print("\n" * 4)
     print("                _     ")
     print("     __________| |____")
     print("    /                 \\")
@@ -46,8 +32,8 @@ def welcome():
     time.sleep(.6)
     clear()
 
-    print("\n"*5)
-    print (smoke[0])
+    print("\n" * 5)
+    print(smoke[0])
     print("     __________| |____")
     print("    /                 \\")
     print("   /     Welcome to    \\")
@@ -60,9 +46,9 @@ def welcome():
     time.sleep(.6)
     clear()
 
-    print("\n"*4)
-    print (smoke[1])
-    print (smoke[0])
+    print("\n" * 4)
+    print(smoke[1])
+    print(smoke[0])
     print("     __________| |____")
     print("    /                 \\")
     print("   /     Welcome to    \\")
@@ -75,10 +61,10 @@ def welcome():
     time.sleep(.6)
     clear()
 
-    print("\n"*3)
-    print (smoke[2])
-    print (smoke[1])
-    print (smoke[0])
+    print("\n" * 3)
+    print(smoke[2])
+    print(smoke[1])
+    print(smoke[0])
     print("     __________| |____")
     print("    /                 \\")
     print("   /     Welcome to    \\")
@@ -91,11 +77,11 @@ def welcome():
     time.sleep(.6)
     clear()
 
-    print("\n"*2)
-    print (smoke[3])
-    print (smoke[2])
-    print (smoke[1])
-    print (smoke[0])
+    print("\n" * 2)
+    print(smoke[3])
+    print(smoke[2])
+    print(smoke[1])
+    print(smoke[0])
     print("     __________| |____")
     print("    /                 \\")
     print("   /     Welcome to    \\")
@@ -108,12 +94,12 @@ def welcome():
     time.sleep(.6)
     clear()
 
-    print("\n"*1)
-    print (smoke[4])
-    print (smoke[3])
-    print (smoke[2])
-    print (smoke[1])
-    print (smoke[0])
+    print("\n" * 1)
+    print(smoke[4])
+    print(smoke[3])
+    print(smoke[2])
+    print(smoke[1])
+    print(smoke[0])
     print("     __________| |____")
     print("    /                 \\")
     print("   /     Welcome to    \\")
@@ -129,8 +115,20 @@ def welcome():
 
 # thread function
 def threaded(c):
-    global amount, user
+    global name
     while True:
+
+        firebaseConfig = {
+            "apiKey": "AIzaSyA3QR5xAFUKdS8TC3cTIhEVvlR6r3ITwAY",
+            "authDomain": "pythonatm-bank.firebaseapp.com",
+            "storageBucket": "pythonatm-bank.appspot.com",
+            "databaseURL": "https://pythonatm-bank-default-rtdb.firebaseio.com/"
+        }
+
+        firebase = pyrebase.initialize_app(firebaseConfig)
+
+        auth = firebase.auth()
+        db = firebase.database()
 
         # data received from client
         data = c.recv(1024)
@@ -148,65 +146,71 @@ def threaded(c):
         intended = input()
 
         while True:
-            if intended == 2:
+            print(intended)
+            if intended == "2":
                 email = input("Please enter your mail address:\n")
                 password = input("Please enter your pass (8 letters - upper, uniqe and numbers combines):\n")
                 name = input("Please enter your full identical name:\n")
 
                 user = auth.create_user_with_email_and_password(email, password)
-                #bonus section
-                user = firebase.auth().current_user
-                amount = 5000
+                balance = 5000
 
-                data = {"name": name, "balance": amount}
-                db.child(email).set(data)
+                data = {"email": email, "balance": balance}
+                db.child("users").child(name).set(data)
+
+                balancecurrent = db.child("users").child(name).child("balance").get()
+                namecurrent = db.child("users").child(name).get()
 
                 print("Success...")
-                print("Hi", user + ",", "Welcome!")
+                print("Hi", namecurrent.val(), ",Welcome!")
                 break
 
-            elif intended == 1:
+            elif intended == "1":
                 email = input("Please enter your mail address:\n")
                 password = input("Please enter your pass:\n")
 
                 user = auth.sign_in_with_email_and_password(email, password)
 
                 print("Success...")
-                print("Hi", db.child(email).child("name").get() + ",", "Welcome back!")
+                print("Hi", email, ",Welcome back!")
                 break
 
-            elif intended == 2:
+            elif intended == "3":
                 break
-            break
-
+        # bonus section
+        user = firebase.auth().current_user
         if user:
             welcome()
             # Check balance
             if data == b'1':
                 # send back balance to client
-                print(db.child(auth.get_account_info(user['email'])).child("balance").get())
-                c.send(bytes(str(db.child(auth.get_account_info(user['email'])).child("balance").get()), 'utf8'))
+                balancecurrent = db.child("users").child(name).child("balance").get()
+                print(balancecurrent.val())
+                c.send(bytes(str(balancecurrent.val()), 'utf8'))
             # Withdraw
             if data == b'2':
+                balancecurrent = db.child("users").child(name).child("balance").get()
                 withdrawal = c.recv(1024)
                 print("Withdraw: ", str(withdrawal, 'utf8'))
                 # Check if withdrawal amount is more than current balance.
-                if int(withdrawal) < db.child(auth.get_account_info(user['email'])).child("balance").get():
-                    amount = db.child(auth.get_account_info(user['email'])).child("balance").get() - int(withdrawal)
-                    db.child(auth.get_account_info(user['email'])).child("balance").set(amount)
-                    print("New balance: ", amount)
-                    c.send(bytes(str(amount), 'utf8'))
+                if int(withdrawal) < balancecurrent.val():
+                    balance = balancecurrent.val() - int(withdrawal)
+                    print("New balance: ", balance)
+                    db.child("users").child(name).child("balance").set(balance)
+                    c.send(bytes(str(balance), 'utf8'))
                 else:
                     print("Withdrawal amount larger then current balance.")
                     c.send(bytes("No", 'utf8'))
             # Deposit
             if data == b'3':
+                balancecurrent = db.child("users").child(name).child("balance").get()
                 deposit = c.recv(1024)
                 print("Deposit: ", str(deposit, 'utf8'))
-                amount = db.child(auth.get_account_info(user['email'])).child("balance").get() + int(deposit)
-                db.child(auth.get_account_info(user['email'])).child("balance").set(amount)
-                print("New balance: ", amount)
-                c.send(bytes(str(amount), 'utf8'))
+                balance = balancecurrent.val() + int(deposit)
+                print("New balance: ", balance)
+                db.child("users").child(name).child("balance").set(balance)
+                c.send(bytes(str(balance), 'utf8'))
+            firebase.getInstance().signOut()
         else:
             print("Cannot transact with the user so the session will be closed!....\n ")
             time.sleep(0.6)
@@ -219,16 +223,18 @@ def threaded(c):
             print("1")
             time.sleep(0.6)
             print("Closed.")
+            firebase.getInstance().signOut()
+            break
 
         # connection closed
     c.close()
 
 
 def Main():
-    host = ""
+    host = "192.168.56.1"
 
     # reserve a port on your computer
-    port = 12345
+    port = 5050
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((host, port))
     print("socket binded to port", port)
